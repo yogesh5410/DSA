@@ -22,7 +22,28 @@ vector<int> sieve(int n) {
     return primes;
 }
 
+// time complexity: O(n + m)
+int KMP(vector<int>& a, vector<int>& p) {
+    int n = a.size(), m = p.size();
+    if (m == 0 || n < m) return 0;
 
+    // Build LPS array
+    vector<int> lps(m);
+    for (int i = 1, j = 0; i < m; i++) {
+        while (j > 0 && p[i] != p[j]) j = lps[j - 1];
+        if (p[i] == p[j]) j++;
+        lps[i] = j;
+    }
+
+    // Search pattern
+    int cnt = 0;
+    for (int i = 0, j = 0; i < n; i++) {
+        while (j > 0 && a[i] != p[j]) j = lps[j - 1];
+        if (a[i] == p[j]) j++;
+        if (j == m) cnt++, j = lps[j - 1];
+    }
+    return cnt;
+}
 
 void solve() {
     // Write your code here
